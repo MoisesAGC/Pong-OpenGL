@@ -13,6 +13,7 @@ const float AltoPaleta = 80.0f;
 float jugador1 = 0.0f;
 float jugador2 = 0.0f;
 float PelotitaX = 0.0f, PelotitaY = 0.0f;
+float PelotitaVelX = 3.0f, PelotitaVelY = 3.0f;
 
 // Función para dibujar un jugador
 void dibujarJugador(float x, float y, float ancho, float alto, float r, float g, float b) {
@@ -68,7 +69,26 @@ void keyboard(unsigned char key, int x, int y) {
             if (jugador2 > -(Altura / 2 - AltoPaleta / 2)) jugador2 -= 10.0f;
             break;
     }
+    glutPostRedisplay();
+}
+
+void update(int value) {
+    // Mover la pelota
+    PelotitaX += PelotitaVelX;
+    PelotitaY += PelotitaVelY;
+
+    // Detectar colisión con los bordes superior e inferior
+    if (PelotitaY > (Altura / 2 - 5) || PelotitaY < -(Altura / 2 - 5)) {
+        PelotitaVelY = -PelotitaVelY; // Invertir la dirección vertical
+    }
+    // Detectar si la pelota sale por los lados izquierda o derecha 
+    if (PelotitaX > (Ancho / 2) || PelotitaX < (-Ancho / 2)) {
+        PelotitaX = 0.0f;
+        PelotitaY = 0.0f;
+    }
+
     glutPostRedisplay(); // Actualizar la pantalla
+    glutTimerFunc(16, update, 0);
 }
 
 int main(int argc, char** argv) {
@@ -87,6 +107,7 @@ int main(int argc, char** argv) {
 
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
+    glutTimerFunc(0, update, 0); 
 
     glutMainLoop();
     return 0;
