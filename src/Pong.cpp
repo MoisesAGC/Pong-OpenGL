@@ -87,6 +87,19 @@ void update(int value) {
         PelotitaY = 0.0f;
     }
 
+    // Detectar colisión con los jugadores
+    if ((PelotitaX < (-Ancho / 2 + 20 + AnchoPaleta / 2) && PelotitaX > (-Ancho / 2 + 20 - AnchoPaleta / 2)) &&
+        (PelotitaY < (jugador1 + AltoPaleta / 2) && PelotitaY > (jugador1 - AltoPaleta / 2))) {
+        PelotitaVelX = -PelotitaVelX;
+    }
+
+    if ((PelotitaX > (Ancho / 2 - 20 - AnchoPaleta / 2) && PelotitaX < (Ancho / 2 - 20 + AnchoPaleta / 2)) &&
+        (PelotitaY < (jugador2 + AltoPaleta / 2) && PelotitaY > (jugador2 - AltoPaleta / 2))) {
+        PelotitaVelX = -PelotitaVelX; 
+    }
+    
+
+
     glutPostRedisplay(); // Actualizar la pantalla
     glutTimerFunc(16, update, 0);
 }
