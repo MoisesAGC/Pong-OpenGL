@@ -1,5 +1,6 @@
 #include <GL/glut.h>
 #include <math.h>
+#include <stdio.h>
 
 // Dimensiones de la ventana
 const int Ancho = 800;
@@ -14,6 +15,18 @@ float jugador1 = 0.0f;
 float jugador2 = 0.0f;
 float PelotitaX = 0.0f, PelotitaY = 0.0f;
 float PelotitaVelX = 3.0f, PelotitaVelY = 3.0f;
+
+//Marcador
+int marcador1 = 0;
+int marcador2 = 0;
+
+// Función para mostrar el marcador
+void Escribir(const char *text, float x, float y) {
+    glRasterPos2f(x, y);
+    while (*text) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *text++);
+    }
+}
 
 // Función para dibujar un jugador
 void dibujarJugador(float x, float y, float ancho, float alto, float r, float g, float b) {
@@ -51,6 +64,12 @@ void display() {
     glEnd();
     glPopMatrix();
 
+    // Mostrar marcador en el centro de la parte superior
+    glColor3f(1.0f, 1.0f, 1.0f);
+    char buffer[50];
+    sprintf(buffer, "Messi: %d | Cristiano: %d", marcador1, marcador2);
+    Escribir(buffer, -60, Altura / 2 - 30); // Ajusta las coordenadas para centrar el texto
+
     glutSwapBuffers();
 }
 
@@ -82,9 +101,15 @@ void update(int value) {
         PelotitaVelY = -PelotitaVelY; // Invertir la dirección vertical
     }
     // Detectar si la pelota sale por los lados izquierda o derecha 
-    if (PelotitaX > (Ancho / 2) || PelotitaX < (-Ancho / 2)) {
+    if (PelotitaX > (Ancho / 2)) {
         PelotitaX = 0.0f;
         PelotitaY = 0.0f;
+        marcador1++; // Incrementar marcador del jugador 1
+    }
+    if (PelotitaX < (-Ancho / 2)) {
+        PelotitaX = 0.0f;
+        PelotitaY = 0.0f;
+        marcador2++; // Incrementar marcador del jugador 2
     }
 
     // Detectar colisión con los jugadores
@@ -97,8 +122,6 @@ void update(int value) {
         (PelotitaY < (jugador2 + AltoPaleta / 2) && PelotitaY > (jugador2 - AltoPaleta / 2))) {
         PelotitaVelX = -PelotitaVelX; 
     }
-    
-
 
     glutPostRedisplay(); // Actualizar la pantalla
     glutTimerFunc(16, update, 0);
